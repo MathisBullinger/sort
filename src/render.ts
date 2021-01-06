@@ -1,4 +1,4 @@
-import { list } from './list'
+import { list, look, clearLook } from './list'
 
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!
 const ctx = canvas.getContext('2d')!
@@ -8,6 +8,8 @@ canvas.height = window.innerHeight * devicePixelRatio
 
 let running = false
 
+let looked = new Set<number>()
+
 function render() {
   if (!running) return
 
@@ -16,9 +18,17 @@ function render() {
   const w = canvas.width / list.length
   const rw = Math.ceil(w)
 
-  ctx.fillStyle = '#fff'
+  if (look.length) {
+    looked = new Set()
+    for (const [i1, i2] of look) {
+      looked.add(i1)
+      looked.add(i2)
+    }
+    clearLook()
+  }
 
   for (let i = 0; i < list.length; i++) {
+    ctx.fillStyle = looked.has(i) ? '#f00' : '#fff'
     const h = (list[i] / list.length) * canvas.height
     ctx.fillRect((i * w) | 0, canvas.height - h, rw, h)
   }
@@ -27,6 +37,7 @@ function render() {
 }
 
 export const start = () => {
+  looked = new Set()
   running = true
   render()
 }
