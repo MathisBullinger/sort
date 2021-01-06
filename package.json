@@ -1,0 +1,29 @@
+{
+  "name": "sort",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisBullinger/sort.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MathisBullinger/sort/issues"
+  },
+  "homepage": "https://github.com/MathisBullinger/sort#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "comlink": "^4.3.0",
+    "tone": "^14.7.58"
+  }
+}

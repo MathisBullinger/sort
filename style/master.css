@@ -1,0 +1,19 @@
+:root {
+  --cl-background: #111;
+
+  background-color: var(--cl-background);
+}
+
+body {
+  margin: 0;
+  overscroll-behavior: none;
+}
+
+canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  touch-action: none;
+}
