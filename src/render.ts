@@ -11,8 +11,6 @@ let running = false
 let looked = new Set<number>()
 
 function render() {
-  if (!running) return
-
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   const w = canvas.width / list.length
@@ -26,6 +24,7 @@ function render() {
     }
     clearLook()
   }
+  if (!running) looked = new Set()
 
   for (let i = 0; i < list.length; i++) {
     ctx.fillStyle = looked.has(i) ? '#f00' : '#fff'
@@ -33,7 +32,7 @@ function render() {
     ctx.fillRect((i * w) | 0, canvas.height - h, rw, h)
   }
 
-  requestAnimationFrame(render)
+  if (running) requestAnimationFrame(render)
 }
 
 export const start = () => {
