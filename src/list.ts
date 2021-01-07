@@ -1,5 +1,5 @@
 export let list: number[] = []
-export let look: [number, number][] = []
+export let look: number[] = []
 
 export const set = (v: number[]) => {
   list = v

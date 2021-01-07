@@ -7,15 +7,7 @@ canvas.width = window.innerWidth * devicePixelRatio
 canvas.height = window.innerHeight * devicePixelRatio
 
 let running = false
-
-let looked = new Set<number>()
-
-const color = (n: number) => {
-  const r = 'cc'
-  const g = (n * 55 + 200).toString(16).slice(0, 2)
-  const b = ((1 - n) * 55 + 200).toString(16).slice(0, 2)
-  return `#${r}${g}${b}`
-}
+let lookedAt = new Set<number>()
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -24,17 +16,16 @@ function render() {
   const rw = Math.ceil(w)
 
   if (look.length) {
-    looked = new Set()
-    for (const [i1, i2] of look) {
-      looked.add(i1)
-      looked.add(i2)
+    lookedAt = new Set()
+    for (const i of look) {
+      lookedAt.add(i)
     }
     clearLook()
   }
-  if (!running) looked = new Set()
+  if (!running) lookedAt = new Set()
 
   for (let i = 0; i < list.length; i++) {
-    ctx.fillStyle = looked.has(i) ? '#ff3d00' : color(list[i] / list.length)
+    ctx.fillStyle = lookedAt.has(i) ? '#ff3d00' : '#f5f5f5'
     const h = (list[i] / list.length) * canvas.height
     ctx.fillRect((i * w) | 0, canvas.height - h, rw, h)
   }
@@ -43,7 +34,7 @@ function render() {
 }
 
 export const start = () => {
-  looked = new Set()
+  lookedAt = new Set()
   running = true
   render()
 }

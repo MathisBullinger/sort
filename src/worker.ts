@@ -16,13 +16,13 @@ export const api = {
   init(
     algorithm: keyof typeof sorts,
     length: number,
-    opsPerSec: number,
+    rps: number,
     cb: (steps: Step[]) => void
   ): number[] {
     const list = shuffle(new Array(length).fill(1).map((v, i) => v + i))
 
     setTimeout(() => {
-      sorts[algorithm](list, opsPerSec, cb)
+      sorts[algorithm](list, rps, cb)
     }, 500)
 
     return list

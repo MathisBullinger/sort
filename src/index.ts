@@ -14,9 +14,10 @@ const algorithm = (algorithms.includes(path)
 
 const worker = wrap<typeof api>(new Worker('./worker.ts'))
 
-const LOOK = 0
+const READ = 0
 const SWAP = 1
-const DONE = 2
+const SET = 2
+const DONE = 3
 
 const sound = true
 
@@ -41,8 +42,8 @@ window.onclick = async () => {
 
     for (const step of steps) {
       switch (step[0]) {
-        case LOOK:
-          list.look.push([step[1], step[2]])
+        case READ:
+          list.look.push(step[1], step[2])
           if (sound) {
             freqs.push(
               ...step
@@ -56,6 +57,9 @@ window.onclick = async () => {
           break
         case SWAP:
           list.swap(step[1], step[2])
+          break
+        case SET:
+          list.list[step[1]] = step[2]
           break
         case DONE:
           render.stop()
@@ -79,6 +83,6 @@ window.onclick = async () => {
   }
 
   list.clearLook()
-  list.set(await worker.init(algorithm, 50, 20, proxy(step)))
+  list.set(await worker.init(algorithm, 100, 50, proxy(step)))
   render.start()
 }
