@@ -14,6 +14,7 @@ const shuffle = (list: number[]): number[] => {
 
 export const api = {
   init(
+    algorithm: keyof typeof sorts,
     length: number,
     opsPerSec: number,
     cb: (steps: Step[]) => void
@@ -21,7 +22,7 @@ export const api = {
     const list = shuffle(new Array(length).fill(1).map((v, i) => v + i))
 
     setTimeout(() => {
-      sorts.insertion(list, opsPerSec, cb)
+      sorts[algorithm](list, opsPerSec, cb)
     }, 500)
 
     return list

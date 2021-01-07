@@ -10,6 +10,13 @@ let running = false
 
 let looked = new Set<number>()
 
+const color = (n: number) => {
+  const r = 'cc'
+  const g = (n * 55 + 200).toString(16).slice(0, 2)
+  const b = ((1 - n) * 55 + 200).toString(16).slice(0, 2)
+  return `#${r}${g}${b}`
+}
+
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -27,7 +34,7 @@ function render() {
   if (!running) looked = new Set()
 
   for (let i = 0; i < list.length; i++) {
-    ctx.fillStyle = looked.has(i) ? '#faa' : '#ddd'
+    ctx.fillStyle = looked.has(i) ? '#ff3d00' : color(list[i] / list.length)
     const h = (list[i] / list.length) * canvas.height
     ctx.fillRect((i * w) | 0, canvas.height - h, rw, h)
   }

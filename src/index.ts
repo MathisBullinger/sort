@@ -4,6 +4,13 @@ import * as list from './list'
 import type { api } from './worker'
 import type { Step } from './sort/utils'
 import * as Tone from 'tone'
+import * as _sorts from './sort/algorithms'
+
+const algorithms = Object.keys(_sorts)
+const path = location.pathname.replace(/^\/|\/$/g, '')
+const algorithm = (algorithms.includes(path)
+  ? path
+  : 'insertion') as keyof typeof _sorts
 
 const worker = wrap<typeof api>(new Worker('./worker.ts'))
 
@@ -72,6 +79,6 @@ window.onclick = async () => {
   }
 
   list.clearLook()
-  list.set(await worker.init(50, 20, proxy(step)))
+  list.set(await worker.init(algorithm, 50, 20, proxy(step)))
   render.start()
 }
