@@ -1,7 +1,8 @@
 import * as render from './render'
 import { wrap, proxy } from 'comlink'
 import * as list from './list'
-import type { api, Step } from './worker'
+import type { api } from './worker'
+import type { Step } from './sort/utils'
 import * as Tone from 'tone'
 
 const worker = wrap<typeof api>(new Worker('./worker.ts'))
@@ -39,7 +40,10 @@ window.onclick = async () => {
             freqs.push(
               ...step
                 .slice(1)
-                .map((n) => (n / list.list.length) * (fMax - fMin) + fMin)
+                .map(
+                  (n) =>
+                    (list.list[n] / list.list.length) * (fMax - fMin) + fMin
+                )
             )
           }
           break
@@ -68,6 +72,6 @@ window.onclick = async () => {
   }
 
   list.clearLook()
-  list.set(await worker.init(70, 100, proxy(step)))
+  list.set(await worker.init(50, 20, proxy(step)))
   render.start()
 }
