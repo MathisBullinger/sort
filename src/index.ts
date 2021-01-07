@@ -44,7 +44,9 @@ window.onclick = async () => {
           break
         case DONE:
           render.stop()
-          synths.forEach((s) => s.triggerRelease())
+          setTimeout(() => {
+            synths.forEach((s) => s.triggerRelease())
+          }, 100)
           break
       }
     }
@@ -60,6 +62,6 @@ window.onclick = async () => {
   }
 
   list.clearLook()
-  list.set(await worker.init(100, 5, proxy(step)))
+  list.set(await worker.init(100, 1, proxy(step)))
   render.start()
 }

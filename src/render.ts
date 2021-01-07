@@ -27,7 +27,7 @@ function render() {
   if (!running) looked = new Set()
 
   for (let i = 0; i < list.length; i++) {
-    ctx.fillStyle = looked.has(i) ? '#f00' : '#fff'
+    ctx.fillStyle = looked.has(i) ? '#faa' : '#ddd'
     const h = (list[i] / list.length) * canvas.height
     ctx.fillRect((i * w) | 0, canvas.height - h, rw, h)
   }

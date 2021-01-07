@@ -21,21 +21,23 @@ export type Step = [StepType, ...number[]]
 const wait = async (ms: number) =>
   await new Promise((res) => setTimeout(res, ms))
 
+const makeSwap = (list: number[]) => (i1: number, i2: number) => {
+  const tmp = list[i1]
+  list[i1] = list[i2]
+  list[i2] = tmp
+}
+
+const minSendDelay = 1000 / 60
+
 async function bubbleSort(
   input: number[],
   stepTime: number,
   cb: (s: Step[]) => void
 ) {
-  const minSendDelay = 1000 / 60
   let lastSend = -Infinity
   const list = [...input]
   let steps: Step[] = []
-
-  const swap = (i1: number, i2: number) => {
-    const tmp = list[i1]
-    list[i1] = list[i2]
-    list[i2] = tmp
-  }
+  const swap = makeSwap(list)
 
   let hasSwapped = false
   let step = 0
@@ -65,6 +67,43 @@ async function bubbleSort(
   return list
 }
 
+async function insertionSort(
+  input: number[],
+  stepTime: number,
+  cb: (s: Step[]) => void
+) {
+  let steps: Step[] = []
+  let lastSend = -Infinity
+
+  const list = [...input]
+  const swap = makeSwap(list)
+
+  for (let i = 1; i < list.length; i++) {
+    let j = i - 1
+    while (j >= 0 && list[j] > list[j + 1]) {
+      steps.push([StepType.LOOK, j, j + 1])
+      steps.push([StepType.SWAP, j, j + 1])
+
+      swap(j + 1, j)
+      j = j - 1
+
+      const now = performance.now()
+      if (now - lastSend >= minSendDelay) {
+        cb(steps)
+        steps = []
+        lastSend = now
+      }
+      await wait(stepTime)
+    }
+  }
+
+  steps.push([StepType.DONE])
+  cb(steps)
+
+  console.log(list)
+  return list
+}
+
 export const api = {
   init(
     length: number,
@@ -74,7 +113,7 @@ export const api = {
     const list = shuffle(new Array(length).fill(1).map((v, i) => v + i))
 
     setTimeout(() => {
-      bubbleSort(list, stepTime, cb)
+      insertionSort(list, stepTime, cb)
     }, 500)
 
     return list
