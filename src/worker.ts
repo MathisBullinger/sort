@@ -69,11 +69,14 @@ async function bubbleSort(
 
 async function insertionSort(
   input: number[],
-  stepTime: number,
+  opsPerSec: number,
   cb: (s: Step[]) => void
 ) {
   let steps: Step[] = []
   let lastSend = -Infinity
+  let ops = 0
+
+  const start = performance.now()
 
   const list = [...input]
   const swap = makeSwap(list)
@@ -93,27 +96,29 @@ async function insertionSort(
         steps = []
         lastSend = now
       }
-      await wait(stepTime)
+      ops++
+      let diff = (1000 / opsPerSec) * ops - (performance.now() - start)
+      if (ops <= 1) diff = Math.max(diff, 1000 / opsPerSec)
+      if (diff > 0) await wait(diff)
     }
   }
 
   steps.push([StepType.DONE])
   cb(steps)
 
-  console.log(list)
   return list
 }
 
 export const api = {
   init(
     length: number,
-    stepTime: number,
+    opsPerSec: number,
     cb: (steps: Step[]) => void
   ): number[] {
     const list = shuffle(new Array(length).fill(1).map((v, i) => v + i))
 
     setTimeout(() => {
-      insertionSort(list, stepTime, cb)
+      insertionSort(list, opsPerSec, cb)
     }, 500)
 
     return list

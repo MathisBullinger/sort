@@ -10,6 +10,8 @@ const LOOK = 0
 const SWAP = 1
 const DONE = 2
 
+const sound = true
+
 window.onclick = async () => {
   await Tone.start()
 
@@ -33,11 +35,13 @@ window.onclick = async () => {
       switch (step[0]) {
         case LOOK:
           list.look.push([step[1], step[2]])
-          freqs.push(
-            ...step
-              .slice(1)
-              .map((n) => (n / list.list.length) * (fMax - fMin) + fMin)
-          )
+          if (sound) {
+            freqs.push(
+              ...step
+                .slice(1)
+                .map((n) => (n / list.list.length) * (fMax - fMin) + fMin)
+            )
+          }
           break
         case SWAP:
           list.swap(step[1], step[2])
@@ -50,6 +54,8 @@ window.onclick = async () => {
           break
       }
     }
+
+    if (!sound) return
     freqs.sort().reverse()
 
     for (let i = 0; i < freqs.length; i++) {
@@ -62,6 +68,6 @@ window.onclick = async () => {
   }
 
   list.clearLook()
-  list.set(await worker.init(100, 1, proxy(step)))
+  list.set(await worker.init(70, 100, proxy(step)))
   render.start()
 }
