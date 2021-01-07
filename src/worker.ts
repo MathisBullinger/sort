@@ -12,14 +12,23 @@ const shuffle = (list: number[]): number[] => {
   return shuffled
 }
 
+const genList = (length: number, arr = new Array(length).fill(0)) => ({
+  linear: () => shuffle(arr.map((_, i) => i)),
+  random: () => shuffle(arr.map(() => Math.random() * length)),
+  reversed: () => arr.map((_, i) => i).reverse(),
+})
+
+export type ListType = keyof ReturnType<typeof genList>
+
 export const api = {
   init(
     algorithm: keyof typeof sorts,
     length: number,
     rps: number,
+    listType: ListType,
     cb: (steps: Step[]) => void
   ): number[] {
-    const list = shuffle(new Array(length).fill(1).map((v, i) => v + i))
+    const list = genList(length)[listType]()
 
     setTimeout(() => {
       sorts[algorithm](list, rps, cb)

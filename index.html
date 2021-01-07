@@ -9,5 +9,28 @@
   </head>
   <body>
     <canvas></canvas>
+    <form id="menu">
+      <div class="line">
+        <label for="algorithm">Algorithm: </label>
+        <select id="algorithm"></select>
+      </div>
+      <div class="line">
+        <label for="size">Length of list: </label>
+        <input type="number" id="size" value="50" />
+      </div>
+      <div class="line">
+        <label for="reads">reads&thinsp;/&thinsp;sec: </label>
+        <input type="number" id="reads" value="20" />
+      </div>
+      <div class="line">
+        <label for="list">List: </label>
+        <select id="list">
+          <option>linear</option>
+          <option>random</option>
+          <option>reversed</option>
+        </select>
+      </div>
+      <button type="submit">Go</button>
+    </form>
   </body>
 </html>

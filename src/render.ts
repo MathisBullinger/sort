@@ -8,6 +8,8 @@ canvas.height = window.innerHeight * devicePixelRatio
 
 let running = false
 let lookedAt = new Set<number>()
+let nMax: number
+let nMin: number
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -26,7 +28,8 @@ function render() {
 
   for (let i = 0; i < list.length; i++) {
     ctx.fillStyle = lookedAt.has(i) ? '#ff3d00' : '#f5f5f5'
-    const h = (list[i] / list.length) * canvas.height
+    const h =
+      (list[i] / (nMax - nMin)) * canvas.height * 0.8 + canvas.height * 0.1
     ctx.fillRect((i * w) | 0, canvas.height - h, rw, h)
   }
 
@@ -36,6 +39,8 @@ function render() {
 export const start = () => {
   lookedAt = new Set()
   running = true
+  nMax = Math.max(...list)
+  nMin = Math.min(...list)
   render()
 }
 

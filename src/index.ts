@@ -1,18 +1,34 @@
 import * as render from './render'
 import { wrap, proxy } from 'comlink'
 import * as list from './list'
-import type { api } from './worker'
+import type { api, ListType } from './worker'
 import type { Step } from './sort/utils'
 import * as Tone from 'tone'
 import * as _sorts from './sort/algorithms'
 
-const algorithms = Object.keys(_sorts)
-const path = location.pathname.replace(/^\/|\/$/g, '')
-const algorithm = (algorithms.includes(path)
-  ? path
-  : 'insertion') as keyof typeof _sorts
-
 const worker = wrap<typeof api>(new Worker('./worker.ts'))
+type Algorithm = keyof typeof _sorts
+
+const menu = document.getElementById('menu')!
+const algSelect = document.querySelector<HTMLSelectElement>('#algorithm')!
+
+const algorithms = Object.keys(_sorts) as Algorithm[]
+for (const name of algorithms) {
+  const opt = document.createElement('option')
+  opt.textContent = name
+  algSelect.appendChild(opt)
+}
+
+menu.onsubmit = (e) => {
+  e.preventDefault()
+  menu.toggleAttribute('hidden', true)
+  start(
+    algSelect.value as Algorithm,
+    parseInt(document.querySelector<HTMLInputElement>('#size')!.value),
+    parseInt(document.querySelector<HTMLInputElement>('#reads')!.value),
+    document.querySelector<HTMLSelectElement>('#list')!.value as ListType
+  )
+}
 
 const READ = 0
 const SWAP = 1
@@ -21,7 +37,12 @@ const DONE = 3
 
 const sound = true
 
-window.onclick = async () => {
+const start = async (
+  algorithm: Algorithm,
+  size: number,
+  rps: number,
+  listType: ListType
+) => {
   await Tone.start()
 
   const fMin = 80
@@ -83,6 +104,6 @@ window.onclick = async () => {
   }
 
   list.clearLook()
-  list.set(await worker.init(algorithm, 100, 50, proxy(step)))
+  list.set(await worker.init(algorithm, size, rps, listType, proxy(step)))
   render.start()
 }

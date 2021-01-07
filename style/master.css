@@ -2,6 +2,7 @@
   --cl-background: #263238;
 
   background-color: var(--cl-background);
+  color: #fff;
 }
 
 body {
@@ -16,4 +17,42 @@ canvas {
   width: 100vw;
   height: 100vh;
   touch-action: none;
+}
+
+#menu {
+  position: absolute;
+  left: 50vw;
+  top: 50vh;
+  transform: translateX(-50%) translateY(-50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 14rem;
+}
+
+#menu[hidden] {
+  display: none;
+}
+
+#menu > * + * {
+  margin-top: 1rem;
+}
+
+.line {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.line > input {
+  width: 5rem;
+}
+
+#algorithm {
+  text-transform: capitalize;
+}
+
+#menu > button {
+  margin-top: 2rem;
 }
