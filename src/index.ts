@@ -12,51 +12,54 @@ const DONE = 2
 
 window.onclick = async () => {
   await Tone.start()
-  const s1 = new Tone.Synth().toDestination()
-  const s2 = new Tone.Synth().toDestination()
-
-  s1.volume.value = -8
-  s2.volume.value = -8
 
   const fMin = 80
   const fMax = 500
 
+  const synths: Tone.Synth[] = []
+  const getSynth = (i: number) => {
+    while (synths.length <= i) {
+      const synth = new Tone.Synth().toDestination()
+      synth.volume.value = -12
+      synths.push(synth)
+    }
+    return synths[i]
+  }
+
   const step = (steps: Step[]) => {
-    let l1: number | undefined = undefined
-    let l2: number | undefined = undefined
+    let freqs: number[] = []
+
     for (const step of steps) {
       switch (step[0]) {
         case LOOK:
           list.look.push([step[1], step[2]])
-          l1 = list.list[step[1]]
-          l2 = list.list[step[2]]
+          freqs.push(
+            ...step
+              .slice(1)
+              .map((n) => (n / list.list.length) * (fMax - fMin) + fMin)
+          )
           break
         case SWAP:
           list.swap(step[1], step[2])
           break
         case DONE:
           render.stop()
-          s1.triggerRelease()
-          s2.triggerRelease()
+          synths.forEach((s) => s.triggerRelease())
           break
       }
     }
-    if (l1 && l2) {
-      const [f1, f2] = [l1, l2].map(
-        (n) => (n / list.list.length) * (fMax - fMin) + fMin
-      )
-      if (s1.frequency.value !== f1) {
-        s1.triggerRelease()
-        s1.triggerAttack(f1)
-      }
-      if (s2.frequency.value !== f2) {
-        s2.triggerRelease()
-        s2.triggerAttack(f2)
-      }
+    freqs.sort().reverse()
+
+    for (let i = 0; i < freqs.length; i++) {
+      const synth = getSynth(i)
+      if (synth.frequency.value === freqs[i]) continue
+      synth.triggerAttack(freqs[i])
     }
+    for (let i = freqs.length; i < synths.length; i++)
+      synths[i].triggerRelease()
   }
 
   list.clearLook()
-  list.set(await worker.init(10, proxy(step)))
+  list.set(await worker.init(100, 5, proxy(step)))
   render.start()
 }
