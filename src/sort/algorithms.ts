@@ -49,7 +49,7 @@ export const shell = wrap(async (list, { read, set }) => {
   }
 })
 
-export const quicksort = wrap(async (list, { swap, read }) => {
+export const quick = wrap(async (list, { swap, read }) => {
   await quick(0, list.length - 1)
 
   async function quick(lo: number, hi: number) {
@@ -65,5 +65,26 @@ export const quicksort = wrap(async (list, { swap, read }) => {
     for (let j = lo; j < hi; j++) if ((await read(j)) <= pivot) swap(++i, j)
     swap(++i, hi)
     return i
+  }
+})
+
+export const bogo = wrap(async (list, { swap, comp }) => {
+  const sorted = () => {
+    for (let i = 1; i < list.length; i++)
+      if (list[i - 1] > list[i]) return false
+    return true
+  }
+
+  const randomIndex = (exclude?: number) => {
+    while (true) {
+      const index = Math.floor(Math.random() * list.length)
+      if (index !== exclude) return index
+    }
+  }
+
+  while (!sorted()) {
+    const a = randomIndex()
+    const b = randomIndex(a)
+    if (await comp(a, b)) swap(a, b)
   }
 })
