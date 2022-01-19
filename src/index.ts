@@ -10,6 +10,7 @@ const worker = wrap<typeof api>(new Worker('./worker.ts'))
 type Algorithm = keyof typeof _sorts
 
 const menu = document.getElementById('menu')!
+const quote = document.querySelector('figure')!
 const algSelect = document.querySelector<HTMLSelectElement>('#algorithm')!
 
 const algorithms = Object.keys(_sorts) as Algorithm[]
@@ -22,6 +23,7 @@ for (const name of algorithms) {
 menu.onsubmit = (e) => {
   e.preventDefault()
   menu.toggleAttribute('hidden', true)
+  quote.toggleAttribute('hidden', true)
   history.pushState(null, '', encodeParams())
   start(
     algSelect.value as Algorithm,
