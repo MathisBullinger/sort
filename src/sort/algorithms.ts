@@ -88,3 +88,16 @@ export const bogo = wrap(async (list, { swap, comp }) => {
     if (await comp(a, b)) swap(a, b)
   }
 })
+
+export const slow = wrap(async (list, { comp, swap }) => {
+  await slowSort(0, list.length - 1)
+
+  async function slowSort(i: number, j: number) {
+    if (i >= j) return
+    const m = Math.floor((i + j) / 2)
+    await slowSort(i, m)
+    await slowSort(m + 1, j)
+    if ((await comp(m, j)) && list[m] !== list[j]) swap(j, m)
+    await slowSort(i, j - 1)
+  }
+})
