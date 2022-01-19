@@ -48,3 +48,22 @@ export const shell = wrap(async (list, { read, set }) => {
     }
   }
 })
+
+export const quicksort = wrap(async (list, { swap, read }) => {
+  await quick(0, list.length - 1)
+
+  async function quick(lo: number, hi: number) {
+    if (lo >= hi || lo < 0) return
+    const p = await partition(lo, hi)
+    await quick(lo, p - 1)
+    await quick(p + 1, hi)
+  }
+
+  async function partition(lo: number, hi: number) {
+    const pivot = await read(hi)
+    let i = lo - 1
+    for (let j = lo; j < hi; j++) if ((await read(j)) <= pivot) swap(++i, j)
+    swap(++i, hi)
+    return i
+  }
+})
