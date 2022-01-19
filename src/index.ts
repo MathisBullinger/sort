@@ -22,6 +22,7 @@ for (const name of algorithms) {
 menu.onsubmit = (e) => {
   e.preventDefault()
   menu.toggleAttribute('hidden', true)
+  history.pushState(null, '', encodeParams())
   start(
     algSelect.value as Algorithm,
     parseInt(document.querySelector<HTMLInputElement>('#size')!.value),
@@ -29,6 +30,39 @@ menu.onsubmit = (e) => {
     document.querySelector<HTMLSelectElement>('#list')!.value as ListType
   )
 }
+
+menu.onchange = () => {
+  history.replaceState(null, '', encodeParams())
+}
+
+window.addEventListener('popstate', (e) => {
+  location.reload()
+})
+
+function encodeParams() {
+  return `?${Object.entries({
+    algorithm: algSelect.value,
+    length: parseInt(document.querySelector<HTMLInputElement>('#size')!.value),
+    rps: parseInt(document.querySelector<HTMLInputElement>('#reads')!.value),
+    type: document.querySelector<HTMLSelectElement>('#list')!.value as ListType,
+  })
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join('&')}`
+}
+
+const params = Object.fromEntries(
+  location.search
+    .replace(/^\?/, '')
+    .split('&')
+    .map((v) => v.split('=').map((s) => decodeURIComponent(s)))
+)
+if ('algorithm' in params) algSelect.value = params.algorithm
+if ('length' in params)
+  document.querySelector<HTMLInputElement>('#size')!.value = params.length
+if ('rps' in params)
+  document.querySelector<HTMLInputElement>('#reads')!.value = params.rps
+if ('type' in params)
+  document.querySelector<HTMLInputElement>('#list')!.value = params.type
 
 const READ = 0
 const SWAP = 1
