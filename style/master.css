@@ -78,12 +78,16 @@ figure {
   bottom: 1.5rem;
   margin: 0;
   max-width: 60ch;
-  
-  font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, 
-    Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, 
+
+  font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman,
+    Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji,
     Segoe UI Emoji, Segoe UI Symbol;
   color: #fffd;
   font-size: 14px;
+}
+
+:root:not([data-algo='quick']) figure {
+  display: none;
 }
 
 figure q {
@@ -97,7 +101,7 @@ figure a {
 }
 
 figcaption {
-  margin-top: .8em;
+  margin-top: 0.8em;
   margin-left: 1em;
   font-family: inherit;
   font-size: 1em;

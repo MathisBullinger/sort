@@ -37,6 +37,10 @@ menu.onchange = () => {
   history.replaceState(null, '', encodeParams())
 }
 
+algSelect.addEventListener('change', () => {
+  document.documentElement.dataset.algo = algSelect.value
+})
+
 window.addEventListener('popstate', (e) => {
   location.reload()
 })
@@ -58,7 +62,10 @@ const params = Object.fromEntries(
     .split('&')
     .map((v) => v.split('=').map((s) => decodeURIComponent(s)))
 )
-if ('algorithm' in params) algSelect.value = params.algorithm
+if ('algorithm' in params) {
+  algSelect.value = params.algorithm
+  document.documentElement.dataset.algo = params.algorithm
+}
 if ('length' in params)
   document.querySelector<HTMLInputElement>('#size')!.value = params.length
 if ('rps' in params)
