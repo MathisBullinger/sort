@@ -68,6 +68,53 @@ export const quick = wrap(async (list, { swap, read }) => {
   }
 })
 
+export const merge = wrap(async (list, { comp, set }) => {
+  const tmp = [...Array(list.length)]
+
+  const copyToTmp = (start: number, end: number) => {
+    for (let i = start; i <= end; i++) {
+      tmp[i] = list[i]
+    }
+  }
+
+  const mergeSorted = async (left: number, mid: number, right: number) => {
+    copyToTmp(left, right)
+
+    const leftSize = mid - left + 1
+    const rightSize = right - mid
+
+    let i = 0
+    let j = 0
+    let k = left
+
+    while (i < leftSize && j < rightSize) {
+      await comp(left + i, mid + 1 + j)
+
+      if (tmp[left + i] <= tmp[mid + 1 + j]) {
+        set(k, tmp[left + i])
+        i++
+      } else {
+        set(k, tmp[mid + 1 + j])
+        j++
+      }
+      k++
+    }
+
+    while (i < leftSize) set(k++, tmp[left + i++])
+    while (j < rightSize) set(k++, tmp[mid + 1 + j++])
+  }
+
+  const mergeSort = async (left: number, right: number) => {
+    if (left >= right) return
+    const mid = Math.floor((left + right) / 2)
+    await mergeSort(left, mid)
+    await mergeSort(mid + 1, right)
+    await mergeSorted(left, mid, right)
+  }
+
+  await mergeSort(0, list.length - 1)
+})
+
 export const bogo = wrap(async (list, { swap, comp }) => {
   const sorted = () => {
     for (let i = 1; i < list.length; i++)
