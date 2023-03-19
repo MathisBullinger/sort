@@ -115,6 +115,40 @@ export const merge = wrap(async (list, { comp, set }) => {
   await mergeSort(0, list.length - 1)
 })
 
+export const heap = wrap(async (list, op) => {
+  const swap = async (a: number, b: number) => {
+    await op.comp(a, b)
+    op.swap(a, b)
+  }
+
+  const heapify = async (n: number, i: number) => {
+    let maxIndex = i
+    const leftIndex = 2 * i + 1
+    const rightIndex = 2 * i + 2
+
+    if (leftIndex < n && (await op.comp(leftIndex, maxIndex))) {
+      maxIndex = leftIndex
+    }
+    if (rightIndex < n && (await op.comp(rightIndex, maxIndex))) {
+      maxIndex = rightIndex
+    }
+
+    if (maxIndex !== i) {
+      await swap(i, maxIndex)
+      await heapify(n, maxIndex)
+    }
+  }
+
+  for (let i = Math.floor((list.length - 1) / 2); i >= 0; i--) {
+    await heapify(list.length, i)
+  }
+
+  for (let i = list.length - 1; i >= 0; i--) {
+    await swap(0, i)
+    await heapify(i, 0)
+  }
+})
+
 export const bogo = wrap(async (list, { swap, comp }) => {
   const sorted = () => {
     for (let i = 1; i < list.length; i++)
